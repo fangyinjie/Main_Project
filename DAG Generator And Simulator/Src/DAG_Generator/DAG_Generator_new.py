@@ -81,6 +81,35 @@ def __gen_flow_single(Algorithm_param_dict):
     return ret_DAGs_list
 
 
+
+
+    # todo DAG——生成方法（2）利用excel表格数据生成DAG 每个sheet一个DAG
+    # def User_DAG_Inject(self, address):
+    #     with pd.ExcelFile(address) as data:
+    #         all_sheet_names = data.sheet_names
+    #         DAG_dict = {}
+    #         for DAG_ID in all_sheet_names:
+    #             temp_DAG = nx.DiGraph()
+    #             temp_DAG.graph['DAG_ID'] = DAG_ID
+    #             df = pd.read_excel(data, DAG_ID, index_col=None, na_values=["NA"])
+    #             title_list = df.dtypes
+    #             for row in df.index:
+    #                 temp_DAG.add_node(df.loc[row]['Node_Index'], DAG_ID=DAG_ID, Status="Block")
+    #                 for title_id, data_type in title_list.items():
+    #                     row_data = df.loc[row][title_id]
+    #                     if title_id == 'Edges_List':
+    #                         if type(row_data) == float:
+    #                             continue
+    #                         row_data = row_data.split(';')
+    #                         for edge_data in row_data:
+    #                             edge_list = edge_data[1:-1].split(',')
+    #                             temp_DAG.add_edge(int(edge_list[0]), int(edge_list[1]))
+    #                     else:
+    #                         temp_DAG.nodes[df.loc[row]['Node_Index']][title_id] = row_data
+    #             DAG_dict[DAG_ID] = temp_DAG
+    #     return DAG_dict
+    #
+
 # #### DAG generator FLOW 算法  #### #
 def __gen_flow_new(Algorithm_param_dict):
     Flow_set = Algorithm_param_dict['Flow_set']                         # []

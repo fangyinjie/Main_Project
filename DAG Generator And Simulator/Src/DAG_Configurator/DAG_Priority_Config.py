@@ -52,6 +52,8 @@ def Priority_Config(Priority_Config_type, temp_dag_x):
         priority_random_config(temp_dag_x)
     elif Priority_Config_type == "WCET":
         priority_WCET_config(temp_dag_x)
+    elif Priority_Config_type == "Zhao":
+        priority_Zhao_config(temp_dag_x)
     elif Priority_Config_type == "SELF":
         priority_DAG_Struct_Aware_Config(temp_dag_x)
     elif Priority_Config_type == "HEFT":
@@ -83,6 +85,8 @@ def priority_HUAWEI_config(DAG_x):
     for node_x in DAG_x.nodes(data=True):
         node_x[1]['Prio'] = prio_dict[ node_x[1]['Node_ID'] ]
 
+def priority_Zhao_config(temp_dag_x):
+    pass
 
 def priority_He_2021_config(temp_dag_x):
     temp_node_list = list(nx.topological_sort(temp_dag_x))

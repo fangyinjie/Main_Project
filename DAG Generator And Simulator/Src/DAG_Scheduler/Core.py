@@ -62,3 +62,14 @@ def ret_dag_id_makespan(Ret_Core_Data_List, DAG_ID):
 def ret_makespan(Ret_Core_Data_List):
     return max([node_data_x['end_time'] for core_id, core_data_x in Ret_Core_Data_List.items() for node_data_x in core_data_x.Core_Running_Task ])
 
+
+
+if __name__ == "__main__":
+    core = Core_Obj('c1')
+    core.Insert_Task_Info((1, {'Node_ID': '1'}), 0, 100)
+    core.Insert_Task_Info((2, {'Node_ID': '2'}), 0, 300)
+    core.Insert_Task_Info((3, {'Node_ID': '3'}), 0, 200)
+    core.Insert_Task_Info((4, {'Node_ID': '4'}), 0, 700)
+    core.Insert_Task_Info((5, {'Node_ID': '4'}), 0, 500)
+    core.Insert_Task_Info((6, {'Node_ID': '4'}), 0, 800)
+    core.Insert_Task_Info((7, {'Node_ID': '5'}), 0, 400)

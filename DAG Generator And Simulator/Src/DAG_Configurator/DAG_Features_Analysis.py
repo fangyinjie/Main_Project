@@ -26,6 +26,7 @@ def get_dag_median(DAG_obj):
         return wcet_list[index]
 
 
+
 # # #### (2) Get the volume of DAG (workload)#### #
 def get_dag_volume(DAG_obj):
     return sum([node_x[1]['WCET'] for node_x in DAG_obj.nodes(data=True)])
@@ -50,6 +51,7 @@ def get_dag_jiter_comput(dag_obj):
         node_num += 1
     return ret/node_num
 
+
 # # #### (*) Get the entropy of DAG  #### #
 # def get_dag_entropy(DAG_obj):
 #   pass
@@ -57,6 +59,29 @@ def get_dag_jiter_comput(dag_obj):
 # # #### (*) Communicate the similarity of the dag list #### #
 # def get_similarity(DAG_list):
 #   pass
+
+#####################################
+# todo Section_0: DAG Basic function
+#####################################
+# #### Gets the nodes in the ready state of the DAG #### #
+# def get_ready_node_list(temp_DAG_list, run_list, ready_list):
+#     temp_ready_list = [(ready_node_x[0], ready_node_x[1][0]) for ready_node_x in ready_list]
+#     ret_list = []
+#     for temp_DAG_x in temp_DAG_list:
+#         ret_list += [(temp_DAG_x.graph['DAG_ID'], x) for x in temp_DAG_x.nodes(data=True) if
+#                      (len(list(temp_DAG_x.predecessors(x[0]))) == 0) and
+#                      ((temp_DAG_x.graph['DAG_ID'], x[0]) not in run_list) and
+#                      ((temp_DAG_x.graph['DAG_ID'], x[0]) not in temp_ready_list)]
+#     return ret_list
+
+
+# # #### get the amount of node in the DAG #### #
+# def get_node_num(temp_DAG_list):
+#     node_num = 0
+#     for temp_DAG_x in temp_DAG_list:
+#         node_num += temp_DAG_x.number_of_nodes()
+#     return node_num
+
 
 def dag_critical_path_new(temp_dag):
     assert nx.is_directed_acyclic_graph(temp_dag)
@@ -252,6 +277,7 @@ def dag_param_critical_update(DAG_obj):
     DAG_obj.graph['Min_WCET'] = float(min(WCET_list))
     DAG_obj.graph['Ave_WCET'] = float(np.mean(WCET_list))
     DAG_obj.graph['Std_WCET'] = float(np.std(WCET_list))
+
 
     # #### 8.critical path configuration #### #
     dag_critical_path_new(DAG_obj)

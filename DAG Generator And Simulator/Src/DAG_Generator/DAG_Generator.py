@@ -615,6 +615,20 @@ def __gen_mine_new_2(Param_Dict):
     return Temp_DAG_list
 
 
+    # def transitive_reduction_matrix(self):
+    #     matrix = np.array(nx.adjacency_matrix(self.G).todense())
+    #     row, columns = matrix.shape
+    #     assert (row == self.task_num)
+    #     assert (columns == self.task_num)
+    #     print("matrix shape is ({0},{1})".format(row, columns))
+    #     i_test = np.eye(self.task_num).astype(bool)
+    #     i_matrix = matrix.astype(bool)
+    #     D = np.power((i_matrix | i_test), self.task_num)  # (M | I)^n
+    #     D = D.astype(bool) & (~i_test)
+    #     TR = matrix & (~(np.dot(i_matrix, D)))  # Tr = T ∩ （-（T . D））
+    #     return nx.DiGraph(TR)
+
+
 # def exam_pic_show(dag_x, title):
 #     dot = gz.Digraph()
 #     dot.attr(rankdir='LR')
@@ -692,3 +706,8 @@ if __name__ == "__main__":
     DDP.Exam_Data_Output(All_DAG_list, 'CRI', output_path)     # 输出关键参数
     # DDP.Exam_Data_Output(All_DAG_list, 'HAISI', output_path)   # 输出关键参数
     """
+
+
+    # #### Transitive reduction Function #### #
+    #   param:  matrix: Adjacency Matrix
+    #   return: A matrix that has been reduced in transitive

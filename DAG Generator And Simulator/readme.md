@@ -1,4 +1,15 @@
 # DAG Generator & Simulator
+
 ## (1) Tool Overview
-hello i'm Fang! 
-123123123123
+
+> > 123
+
+> 123
+
+> > 123
+
+hello i'm Fang!
+
+>> {\$123\$}$$ 12 $$
+
+$$ \sqrt{3x-1}+(1+x)^2 $$
