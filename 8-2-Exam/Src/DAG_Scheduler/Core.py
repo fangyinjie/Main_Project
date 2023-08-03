@@ -23,6 +23,7 @@ class Core_Obj:
         self.Running_node         = []
         self.Task_allocation_list = []
 
+
     def Insert_Task_Info(self, node, start_time, end_time):
         temp_dict = {'node': node, 'start_time': start_time, 'end_time': end_time}
         self.Core_Running_Task.append(temp_dict)
