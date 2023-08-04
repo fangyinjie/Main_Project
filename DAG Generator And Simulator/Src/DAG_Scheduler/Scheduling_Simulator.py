@@ -9,11 +9,10 @@
 ################################################################################
 import random
 import simpy
-
-from . import Core
-from ..DAG_Configurator import DAG_Priority_Config as DPC
-from . import Light_Scheduling_Simulator_new as LSS
 import copy
+from . import Core
+from . import Light_Scheduling_Simulator_new as LSS
+from ..DAG_Configurator import DAG_Priority_Config as DPC
 
 
 # 基于FIFO的列表式-非抢占-调度

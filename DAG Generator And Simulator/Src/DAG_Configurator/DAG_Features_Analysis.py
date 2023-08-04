@@ -162,13 +162,17 @@ def dag_data_initial(DAG_obj, DAGType, DAG_id, Period, DAGInstID=0, Critic=0, Ar
     DAG_obj.graph['DAGTypeID']      = int(DAG_id)       # 1 level
     DAG_obj.graph['DAGInst']        = str(DAGInstID)    # 2 level
     DAG_obj.graph['DAGInstID']      = int(DAGInstID)    # 2 level
+
     DAG_obj.graph['Criticality']    = int(Critic)
     DAG_obj.graph['CriticalityID']  = str(Critic)
+
+
 
     DAG_obj.graph['SlotLen']            = float(Arrive_time)
     DAG_obj.graph['DAGsubmitOffset']    = float(Arrive_time)
     DAG_obj.graph['Arrive_time']        = float(Arrive_time)
     DAG_obj.graph['Period']             = float(Period)
+    DAG_obj.graph['Cycle']              = str(DAGType)       # 执行的周期数量
     DAG_obj.graph['DDL']                = float(Period)
 
     DAG_obj.graph['Median']             = get_dag_median(DAG_obj)
