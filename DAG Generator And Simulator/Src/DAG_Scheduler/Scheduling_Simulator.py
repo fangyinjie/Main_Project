@@ -11,7 +11,7 @@ import random
 import simpy
 
 from . import Core
-from . import DAG_Priority_Config as DPC
+from ..DAG_Configurator import DAG_Priority_Config as DPC
 from . import Light_Scheduling_Simulator_new as LSS
 import copy
 

@@ -10,100 +10,41 @@
 
 import os
 import matplotlib.pyplot as plt
-from . import Core as Core
-# import Core as Core
-# import Core as Core
+from ..DAG_Scheduler import Core as Core
 
-""" 一个处理器（Processor），拥有特定数量的资源（core，内存，缓存等）。一个客户首先申请服务。在对应服务时间完成后结束并离开工作站 """
-DAG_ID_Trans = {"M1_S1_C1": 'DAG1',
-                "M1_S2_C1": 'DAG2',
-                "M1_S2_C2": 'DAG3',
-                "M1_S2_C2": 'DAG4',
-                "M2_S1_C1": 'DAG5',
-                "M2_S2_C1": 'DAG6'}
+color_list = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6', '#6a3d9a', '#ffff99', '#b15928']
+flow_color_dict = {0: '#1b9e77', 1: '#d95f02', 2: '#7570b3', 3: '#e7298a', 4: "#D8D8D8", 5: "#fdcdac", 6: "#cbd5e8"}
+DAG_color_dict  = {'DAG1': "#1b9e77", 'DAG2': "#d95f02", 'DAG3': "#7570b3"}
+DAG_ID_Trans1 = {"M1_S1_C1": 'DAG1', "M1_S2_C1": 'DAG1', "M1_S1_C2": 'DAG2', "M1_S2_C2": 'DAG2', "M2_S1_C1": 'DAG3', "M2_S2_C1": 'DAG3'}
+DAG_ID_Trans2 = {"M1_S1_C1": 'DAG1', "M1_S2_C1": 'DAG2', "M1_S1_C2": 'DAG3', "M1_S2_C2": 'DAG4', "M2_S1_C1": 'DAG5', "M2_S2_C1": 'DAG6'}
 
-color_dict = {0: '#1b9e77', 1: '#d95f02', 2: '#7570b3', 3: '#e7298a'}
-
-DAG_ID_Trans_MC = {"M1_S1_C1": 'DAG1', "M1_S2_C1": 'DAG1',
-                   "M1_S1_C2": 'DAG2', "M1_S2_C2": 'DAG2',
-                   "M2_S1_C1": 'DAG3', "M2_S2_C1": 'DAG3'}
-
-DAG_color_list = {
-    'DAG1': "#1b9e77",
-    'DAG2': "#d95f02",
-    'DAG3': "#7570b3",
-}
-# Dag_color_list = {"M1_S1_C1": {0: "#D8D8D8", 1: "#D8D8D8"},
-#                   "M1_S2_C1": {0: "#b3e2cd", 1: "#b3e2cd", 2: "#b3e2cd"},
-#                   "M1_S2_C2": {0: "#fdcdac", 1: "#fdcdac"},
-#                   "M1_S2_C2": {0: "#fdcdac", 1: "#fdcdac", 2: "#fdcdac"},
-#                   "M2_S1_C1": {0: "#fdcdac", 1: "#fdcdac"},
-#                   "M2_S2_C1": {0: "#cbd5e8", 1: "#cbd5e8", 2: "#cbd5e8"},
+# Dag_color_list = {"M1_S1_C1": {0: "#D8D8D8", 1: "#D8D8D8"},   "M1_S2_C1": {0: "#b3e2cd", 1: "#b3e2cd", 2: "#b3e2cd"},
+#                   "M1_S2_C2": {0: "#fdcdac", 1: "#fdcdac"},   "M1_S2_C2": {0: "#fdcdac", 1: "#fdcdac", 2: "#fdcdac"},
+#                   "M2_S1_C1": {0: "#fdcdac", 1: "#fdcdac"},   "M2_S2_C1": {0: "#cbd5e8", 1: "#cbd5e8", 2: "#cbd5e8"},
 #                   "M2_S3_C1": {0: "#f4cae4", 1: "#f4cae4", 2: "#f4cae4", 3: "#f4cae4", 4: "#f4cae4", 5: "#f4cae4"}}
 
-
-Dag_color_list = {"M1_S1_C1": {0: "#D8D8D8", 1: "#b3e2cd"},
-                  "M1_S2_C1": {0: "#D8D8D8", 1: "#fdcdac", 2: "#cbd5e8"},
-                  "M1_S2_C2": {0: "#D8D8D8", 1: "#b3e2cd"},
-                  "M1_S2_C2": {0: "#D8D8D8", 1: "#fdcdac", 2: "#cbd5e8"},
-                  "M2_S1_C1": {0: "#D8D8D8", 1: "#b3e2cd"},
-                  "M2_S2_C1": {0: "#D8D8D8", 1: "#fdcdac", 2: "#cbd5e8"}}
-
-Dag_color_CC = {0: "#D8D8D8", 1: "#1b9e77", 2: "#fdcdac", 3: "#cbd5e8"}
-
-#
-# 'DAG2': "#d95f02",
-# 'DAG3': "#7570b3",
-
-
-dag_cnode_dict = {
-    'DAG1_M': [0, 4, 6, 13, 20, 32, 38, 41, 46, 47],
-    'DAG2_M': [0, 2, 6, 14],
-    'DAG3_M': [0, 2, 4, 13, 21, 35, 36]
-}
-# #############
-# if y['node'][1]['Flow_Num'] == 1:
-#     color_id = '#fdcdac'
-#     # ", 1: "", 2: ""
-#     pass
-# elif y['node'][1]['Flow_Num'] == 2:
-#     color_id = '#cbd5e8'
-#     pass
-
-def show_makespan(Core_Data_List, ax, font_size, title_data):
+def show_makespan(Core_Data_List, ax, DAG_list, font_size, title_data, Period):
     makespan_res = Core.ret_makespan(Core_Data_List)
-    # makespan_res_C1 = Core.ret_dag_cri_makespan(Core_Data_List, 1)
-    # makespan_res_C2 = Core.ret_dag_cri_makespan(Core_Data_List, 2)
     ax.set_title(title_data + f"makespan:{makespan_res}", fontsize=font_size, color="black", weight="light", ha='left', x=0)    # 子图标题
     core_name_list = []
     core_y_location_list = []
     ax.ticklabel_format(style='plain')
     plt.xticks(fontproperties='Times New Roman', size=font_size)
     plt.xlim(xmin=0, xmax=makespan_res)
+    C1 = [plt.scatter(0, 0, marker="s", color=color_list[dag_x.graph['DAGTypeID']]) for dag_x in DAG_list]
+    C2 = [f'dag_{dag_x.graph["DAG_ID"]}' for dag_x in DAG_list]
+    plt.legend(C1, C2, loc='upper right', title='', prop={'family': 'Times New Roman', 'size': font_size} )
     for core_channel, (x_id, x) in enumerate(Core_Data_List.items()):
         core_name_list.append('core {0}'.format(x.Core_ID))
         for y in x.Core_Running_Task:
             barh_width = y['end_time'] - y['start_time']
             barh_left  = y['start_time']
             text_left  = y['start_time'] + (y['end_time'] - y['start_time']) / 2
-            # name       = '{0}:{1}'.format(y['node'][1]['JobTypeID'], y['node'][1]['Node_Index'])
-            # name = (y['node'][1]['EDIT_ID'] + '/')[4:-1]
-            # name       = '{0}\n{1}'.format(y['node'][1]['Node_ID'], y['node'][1]['Node_Index'])
-            # name       = '{0}\n{1}--{2}'.format(y['node'][1]['Node_ID'], y['node'][1]['WCET'],  y['node'][1]['DAG'].graph['DAG_ID'])
-            # name = ''
-            name = f'{y["node"][0]}'
-            # Bar_Colore = 'lightgray'
-            # Bar_Colore = Dag_color_CC[ y['node'][1]['Flow_Num'] ]
-            Bar_Colore = color_dict[ y['node'][1]['Criticality'] ]
-            # Bar_Colore = '#fdcdac'
-            # if barh_width < 10:
-            #     continue
-            ax.barh(y=core_channel, width=barh_width, height=1, left=barh_left, color=Bar_Colore, edgecolor='black')
-            ax.text(y=core_channel, x=text_left, s='{0}'.format(name, barh_width), fontsize=font_size, family='Times New Roman', ha='center', va='center')
-            # plt.xlabel("time-axis_({0})".format(xtikck_type), fontdict={'family': 'Times New Roman', 'size': font_size})
+            ax.barh(y=core_channel, width=barh_width, height=0.8, left=barh_left, color=color_list[ y['node'][1]['DAG'].graph['DAGTypeID'] ], edgecolor='black')
+            ax.text(y=core_channel, x=text_left, s='{0}'.format(f'{y["node"][0]}', barh_width), fontsize=font_size, family='Times New Roman', ha='center', va='center')
         core_y_location_list.append(core_channel * 1)
     plt.yticks(core_y_location_list, core_name_list, fontproperties='Times New Roman', size=font_size)
-
+    plt.axvline(x=Period, ls="-", c="red")  # 添加垂直直线
 
 def show_single_dag_and_makespan_random(Core_Data_List, makespan_res, ax, xtikck_type, font_size, DAG_T):
     core_channel = 0
@@ -269,14 +210,14 @@ def show_dag_and_makespan_2(Core_Data_List, ax_obj, font_size):
     plt.xlim(xmin=0, xmax=makespan_res * 1)
 
 
-def show_core_data_list(Cdlist_obj, Show_or_Save, file_name):
+def show_core_data_list(Cdlist_obj, Show_or_Save, file_name, DAG_list, Period):
     dict_len = len(Cdlist_obj)
     plt.figure(figsize=(25, 10 * dict_len))
-    FontSize = 8
     for num_id, (key, value) in enumerate(Cdlist_obj.items()):
         ax = plt.subplot(dict_len, 1, num_id+1)
-        show_makespan(value, ax, FontSize, key)
+        show_makespan(value, ax, DAG_list, font_size=8, title_data=key, Period=Period)
     if Show_or_Save == 'Show':
+        # pass
         plt.show()
     else:
         os.makedirs(Show_or_Save, mode=0o777, exist_ok=True)
@@ -334,3 +275,12 @@ if __name__ == "__main__":
 
 
 
+plt.legend()
+# 函数可以为图形添加图例，图例的内容是由可迭代的artist或者文本提供的，比如，可以把曲线的标签放在图例中。其完整用法为：
+# plt.legend(handles, labels, loc, title, prop)，
+# 其中：
+#     handles：    图例中绘制的那些artist；
+#     labels：     图例中每个artist的标签；
+#     loc：        图例的位置；
+#     title：      图例的标题；
+#     prop：       图例中文本的属性设置；

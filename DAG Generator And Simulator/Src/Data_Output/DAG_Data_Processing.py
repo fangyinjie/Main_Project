@@ -45,7 +45,7 @@ def __exam_xlsx_ALL_Output(DAG_list, address):
         dot = gz.Digraph(node_attr={'shape': 'box'}, edge_attr={'labeldistance': "10.5"}, format="png")
         dot.attr(rankdir='LR')
         for node_x in dag_x.nodes(data=True):
-            temp_label = 'Node_ID:{0}\nWCET:{1}\nAET:{2}\n'.format(str(node_x[1]['Node_ID']), str(node_x[1]['WCET']), str(node_x[1]['AET']))
+            temp_label = 'Node_ID:{0}\nWCET:{1}\n'.format(str(node_x[1]['Node_ID']), str(node_x[1]['WCET']))
             temp_node_dict = node_x[1]
             if 'critic' in temp_node_dict:
                 if node_x[1]['critic']:

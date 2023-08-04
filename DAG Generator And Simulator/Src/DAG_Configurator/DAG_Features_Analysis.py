@@ -11,7 +11,7 @@ import copy
 
 import networkx as nx
 import numpy as np
-from . import DAG_WCET_Config as DWC
+from . import DAG_WCET_Config as DWC    # 引入同一目录下的文件  from . import xxx
 # from . import DAG_Generator as DG
 
 

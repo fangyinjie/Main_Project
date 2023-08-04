@@ -9,7 +9,7 @@
 ################################################################################
 import copy
 import networkx as nx
-from . import Simulation_Result_Show as SRS
+# from . import Simulation_Result_Show as SRS
 from . import Core
 # import Simulation_Result_Show as SRS
 # import Core
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         for node_data in core_x.Core_Running_Task:
             print(node_data)
 
-    SRS.show_core_data_list({'test': {core_x.Core_ID: core_x for core_x in core_list}}, 'Show', '')
+    # SRS.show_core_data_list({'test': {core_x.Core_ID: core_x for core_x in core_list}}, 'Show', '')
 
     # nx.draw_networkx(G, pos=nx.circular_layout(G), arrows=True, node_size=400, edge_color='r')
 

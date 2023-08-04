@@ -13,7 +13,7 @@ import networkx as nx
 import numpy as np
 import copy
 import time
-import graphviz as gz
+# import graphviz as gz
 
 # import DAG_Generator as DG
 
