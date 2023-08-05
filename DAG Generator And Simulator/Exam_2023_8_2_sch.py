@@ -25,8 +25,8 @@ from Src.DAG_Configurator import DAG_Features_Analysis as DFA
 from Src.Data_Output import Simulation_Result_Show as SRS
 
 
-Root_Addr = "D:\\github\\Exam_Data\\Output_data\\"                             # 根地址
-Data_Output_Addr = "D:\\github\\Exam_Data\\Output_data\\DAG_Generator\\test\\" # 输出地址
+Root_Addr = "D:\\github\\Exam_Data\\Output_data\\"                              # 根地址
+Data_Output_Addr = "D:\\github\\Exam_Data\\Output_data\\DAG_Generator\\test\\"  # 输出地址
 Data_Input_flow_Addr = "D:\\github\\Exam_Data\\Input_data\\Exam_Input_data\\original_data\\DAG_Data_flow_new.xlsx"        # flow data
 Data_Input_huawei_Addr = "D:\\github\\Exam_Data\\Input_data\\Exam_Input_data\\original_data\\HUAWEI_Single.xlsx"        # huawei dag
 
