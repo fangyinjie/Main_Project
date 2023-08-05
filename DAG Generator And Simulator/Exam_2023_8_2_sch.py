@@ -29,7 +29,7 @@ Root_Addr = "D:\\github\\Exam_Data\\Output_data\\"                              
 Data_Output_Addr = "D:\\github\\Exam_Data\\Output_data\\DAG_Generator\\test\\"  # 输出地址
 Data_Input_flow_Addr = "D:\\github\\Exam_Data\\Input_data\\Exam_Input_data\\original_data\\DAG_Data_flow_new.xlsx"        # flow data
 Data_Input_huawei_Addr = "D:\\github\\Exam_Data\\Input_data\\Exam_Input_data\\original_data\\HUAWEI_Single.xlsx"        # huawei dag
-
+c = 1
 # DAG_list_Mine = DG.Algorithm_input('MINE', {'DAG_Num': 3, 'Node_Num': 37, 'Critic_Path': 7, 'Width': 15, 'Jump_level': 1, 'Conn_ratio': 0.08859, 'Max_Shape': 15, 'Min_Shape': 1, 'Max_in_degree': 15, 'Max_out_degree': 5})
 DAG_list_GNP = DG.Algorithm_input('ERDOS_GNP', {'Node_Num': 10, 'Edge_Pro': 0.5, 'DAG_Num': 3 })
 # DAG_list_GNM = DG.Algorithm_input('ERDOS_GNM', {'Node_Num': 10, 'Edge_Num': 18, 'DAG_Num': 3 })
