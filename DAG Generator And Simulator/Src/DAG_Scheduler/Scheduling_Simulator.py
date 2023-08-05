@@ -57,10 +57,11 @@ class Dispatcher_Workspace(object):
         self.env.run(until=self.Total_Time)
 
     def __Task_Mannger(self, DAG_id):
-        dag_num = 0
+        # dag_num = 0
         target_dag = self.Dag_List[DAG_id]
         yield self.env.timeout(target_dag.graph['Arrive_time'])
-        while dag_num := dag_num + 1:
+        for dag_num in range(target_dag.graph['Cycle']):
+        # while dag_num := dag_num + 1:
             Arrive_dag = copy.deepcopy(target_dag)
             Arrive_dag.graph["DAG_NUM"] = dag_num
             # #### ########################## #### #

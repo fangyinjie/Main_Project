@@ -137,7 +137,7 @@ def dag_critical_path_new(temp_dag):
         node_x[1]['L_L_F'] = node_x[1]['L_S_T'] - node_x[1]['E_S_T']
 
 
-def dag_data_initial(DAG_obj, DAGType, DAG_id, Period, DAGInstID=0, Critic=0, Arrive_time=0):
+def dag_data_initial(DAG_obj, DAGType, DAG_id, Period, Cycle=1, DAGInstID=0, Critic=0, Arrive_time=0):
     np_nodes = [nodex for nodex in DAG_obj.nodes() if len(list(DAG_obj.predecessors(nodex))) == 0]
     ns_nodes = [nodex for nodex in DAG_obj.nodes() if len(list(DAG_obj.successors(nodex))) == 0]
     if len(np_nodes) != 1:
@@ -166,13 +166,12 @@ def dag_data_initial(DAG_obj, DAGType, DAG_id, Period, DAGInstID=0, Critic=0, Ar
     DAG_obj.graph['Criticality']    = int(Critic)
     DAG_obj.graph['CriticalityID']  = str(Critic)
 
-
-
     DAG_obj.graph['SlotLen']            = float(Arrive_time)
     DAG_obj.graph['DAGsubmitOffset']    = float(Arrive_time)
     DAG_obj.graph['Arrive_time']        = float(Arrive_time)
     DAG_obj.graph['Period']             = float(Period)
-    DAG_obj.graph['Cycle']              = str(DAGType)       # 执行的周期数量
+
+    DAG_obj.graph['Cycle']              = int(Cycle)       # 执行的周期数量
     DAG_obj.graph['DDL']                = float(Period)
 
     DAG_obj.graph['Median']             = get_dag_median(DAG_obj)
