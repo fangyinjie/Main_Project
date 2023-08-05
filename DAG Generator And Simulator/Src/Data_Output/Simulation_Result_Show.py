@@ -22,6 +22,9 @@ DAG_ID_Trans2 = {"M1_S1_C1": 'DAG1', "M1_S2_C1": 'DAG2', "M1_S1_C2": 'DAG3', "M1
 #                   "M1_S2_C2": {0: "#fdcdac", 1: "#fdcdac"},   "M1_S2_C2": {0: "#fdcdac", 1: "#fdcdac", 2: "#fdcdac"},
 #                   "M2_S1_C1": {0: "#fdcdac", 1: "#fdcdac"},   "M2_S2_C1": {0: "#cbd5e8", 1: "#cbd5e8", 2: "#cbd5e8"},
 #                   "M2_S3_C1": {0: "#f4cae4", 1: "#f4cae4", 2: "#f4cae4", 3: "#f4cae4", 4: "#f4cae4", 5: "#f4cae4"}}
+# color_list_t = ['palevioletred', 'cornflowerblue', 'darkorange', 'indianred', 'green', 'royalblue', 'tomato',
+#                 'greenyellow', 'dodgerblue', 'fuchsia', 'blueviolet', 'lawngreen', 'pink', 'olive', 'silver',
+#                 'lightcoral', 'lightseagreen', 'plum']
 
 def show_makespan(Core_Data_List, ax, DAG_list, font_size, title_data, Period):
     makespan_res = Core.ret_makespan(Core_Data_List)

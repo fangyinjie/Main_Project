@@ -149,12 +149,14 @@ class Dispatcher_Workspace(object):
     # assign idle core to ready node
     def Core_Task_Maping(self):
         while len(self.Ready_list) > 0:
-            idle_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Running_node) == 0 and len(cd.Task_allocation_list) == 0]
+            idle_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Running_node) == 0 and
+                                                                               len(cd.Task_allocation_list) == 0]
+            idle_core_list.sort(key=lambda x: x.Core_ID, reverse=True)
             if len(idle_core_list) > 0:
                 # idle_core = random.choice(idle_core_list)                             # (1) 随机抽取一个核
-                idle_core_list.sort(key=lambda x: x.last_finish_time, reverse=True)     # (2) 抽取完成时间最大的核（负载最大）
+                # idle_core_list.sort(key=lambda x:  x.last_finish_time, reverse=True)    # (2) 抽取完成时间最大的核（负载最大）
                 # idle_core_list.sort(key=lambda x: x.last_finish_time, reverse=False)  # (3) 抽取完成时间最小的核（负载最小）
-                idle_core = idle_core_list.pop(0)  # (2) 抽取完成最晚的
+                idle_core = idle_core_list.pop(0)
                 re_node = self.Ready_Node_Dequeue()
                 idle_core.Task_allocation_list.append(re_node)
 
@@ -266,6 +268,7 @@ class Dispatcher_Workspace(object):
         return True
 
     def Ready_Node_Dequeue(self):
+        # self.Ready_list.sort(key=lambda x: x[1]['DAG'].graph['DAGTypeID'], reverse=True)
         # (1) Priority rank    # self.Ready_list = sorted(self.Ready_list, key=lambda x: x[0], reverse=False)
         if self.Priority_rank:
             self.Ready_list = sorted(self.Ready_list, key=lambda x: x[1]['Prio'], reverse=False)

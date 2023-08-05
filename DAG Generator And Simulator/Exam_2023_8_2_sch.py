@@ -36,18 +36,19 @@ DAG_list_GNP = DG.Algorithm_input('ERDOS_GNP', {'Node_Num': 10, 'Edge_Pro': 0.5,
 All_DAG_list = DAG_list_GNP
 
 TTL = 1130000
-core_num = 5
-Total_Time = TTL/1000
-Period = Total_Time/2
+core_num = 3
+Total_Time = TTL/500
+Period = Total_Time/3
 
 for dag_id, dag_x in enumerate(All_DAG_list):
-    DWC.WCET_Config(dag_x, 'Uniform', False, 20, 100)
-    DFA.dag_data_initial(dag_x, DAGType=int(dag_id), DAG_id=int(dag_id), Period=Period, Critic=2)
+    DWC.WCET_Config(dag_x, 'Uniform', False, 20, 50)
+    DFA.dag_data_initial(dag_x, DAGType=int(dag_id), DAG_id=int(dag_id), Period=Period, Cycle=3, Critic=int(dag_id))
 
     DFA.dag_param_critical_update(dag_x)
     DPC.Priority_Config('SELF', dag_x)
 
-Dispatcher = SS.Dispatcher_Workspace([copy.deepcopy(All_DAG_list), {'Core_Num': core_num, 'Total_Time': Period * (3), 'Enqueue_rank': False, 'Priority_rank': True, 'Preempt_type': False, 'Dynamic': False}])
+Dispatcher = SS.Dispatcher_Workspace([copy.deepcopy(All_DAG_list), {'Core_Num': core_num, 'Total_Time': Total_Time * (4),
+                            'Enqueue_rank': False, 'Priority_rank': True, 'Preempt_type': False, 'Dynamic': False}])
 Dispatcher.run()
 
 SELF_h = Dispatcher.Core_Data_List
