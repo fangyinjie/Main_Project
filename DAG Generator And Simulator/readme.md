@@ -10,6 +10,6 @@
 
 hello i'm Fang!
 
-
+$c=x_2$
 
 
