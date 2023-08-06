@@ -73,3 +73,5 @@ print(f'makespan:{makespan}')
 print(f'workload_rade:{workload_rade}')
 
 SRS.show_core_data_list({'NP': SELF_h, 'P': SELF_P_h}, 'Show', '', copy.deepcopy(All_DAG_list), Period)
+
+# SRS.show_core_data_list({'NP': SELF_h, 'P': SELF_P_h}, 'Show', '', copy.deepcopy(All_DAG_list), Period)
