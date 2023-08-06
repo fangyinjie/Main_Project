@@ -37,17 +37,19 @@ All_DAG_list = DAG_list_GNP
 
 TTL = 1130000
 core_num = 3
-Total_Time = TTL/500
-Period = Total_Time/3
+Period = TTL/3000
+cycle = 4
+# Total_Time = TTL/500
+# Period = Total_Time/3
 
 for dag_id, dag_x in enumerate(All_DAG_list):
     DWC.WCET_Config(dag_x, 'Uniform', False, 20, 50)
-    DFA.dag_data_initial(dag_x, DAGType=int(dag_id), DAG_id=int(dag_id), Period=Period, Cycle=3, Critic=int(dag_id))
+    DFA.dag_data_initial(dag_x, DAGType=int(dag_id), DAG_id=int(dag_id), Period=Period, Cycle=cycle, Critic=int(dag_id))
 
     DFA.dag_param_critical_update(dag_x)
     DPC.Priority_Config('SELF', dag_x)
 
-Dispatcher = SS.Dispatcher_Workspace([copy.deepcopy(All_DAG_list), {'Core_Num': core_num, 'Total_Time': Total_Time * (4),
+Dispatcher = SS.Dispatcher_Workspace([copy.deepcopy(All_DAG_list), {'Core_Num': core_num, 'Total_Time': Period * cycle * 2,
                             'Enqueue_rank': False, 'Priority_rank': True, 'Preempt_type': False, 'Dynamic': False}])
 Dispatcher.run()
 
@@ -57,4 +59,17 @@ workload_rade = 100 * sum([DFA.get_dag_volume(dag_x) for dag_x in All_DAG_list])
 
 print(f'makespan:{makespan}')
 print(f'workload_rade:{workload_rade}')
-SRS.show_core_data_list({'dag': SELF_h}, 'Show', '', copy.deepcopy(All_DAG_list), Period)
+
+
+Dispatcher = SS.Dispatcher_Workspace([copy.deepcopy(All_DAG_list), {'Core_Num': core_num, 'Total_Time': Period * cycle * 2,
+                            'Enqueue_rank': False, 'Priority_rank': True, 'Preempt_type': 'type1', 'Dynamic': False}])
+Dispatcher.run()
+SELF_P_h = Dispatcher.Core_Data_List
+makespan = Core.ret_makespan(SELF_P_h)
+workload_rade = 100 * sum([DFA.get_dag_volume(dag_x) for dag_x in All_DAG_list]) / \
+                sum([core_x.get_core_last_time() for core_id, core_x in SELF_P_h.items()])
+
+print(f'makespan:{makespan}')
+print(f'workload_rade:{workload_rade}')
+
+SRS.show_core_data_list({'NP': SELF_h, 'P': SELF_P_h}, 'Show', '', copy.deepcopy(All_DAG_list), Period)
