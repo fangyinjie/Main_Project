@@ -1,0 +1,185 @@
+digraph {
+	rankdir=LR
+	1 [label="Node_ID:1
+Prio:1
+WCET:1500.0
+PT:14" color=black]
+	2 [label="Node_ID:2
+Prio:26
+WCET:34276.0
+PT:25" color=black]
+	3 [label="Node_ID:3
+Prio:29
+WCET:32220.0
+PT:18" color=black]
+	4 [label="Node_ID:4
+Prio:30
+WCET:32220.0
+PT:22" color=black]
+	5 [label="Node_ID:5
+Prio:2
+WCET:40920.0
+PT:10" color=black]
+	6 [label="Node_ID:6
+Prio:3
+WCET:40920.0
+PT:26" color=black]
+	7 [label="Node_ID:7
+Prio:31
+WCET:20000.0
+PT:30" color=black]
+	8 [label="Node_ID:8
+Prio:32
+WCET:20000.0
+PT:26" color=black]
+	9 [label="Node_ID:9
+Prio:4
+WCET:36392.0
+PT:19" color=black]
+	10 [label="Node_ID:10
+Prio:5
+WCET:36392.0
+PT:9" color=black]
+	13 [label="Node_ID:13
+Prio:6
+WCET:36392.0
+PT:29" color=black]
+	11 [label="Node_ID:11
+Prio:7
+WCET:36392.0
+PT:12" color=black]
+	12 [label="Node_ID:12
+Prio:8
+WCET:36392.0
+PT:20" color=black]
+	14 [label="Node_ID:14
+Prio:9
+WCET:36392.0
+PT:4" color=black]
+	15 [label="Node_ID:15
+Prio:10
+WCET:292952.0
+PT:32" color=black]
+	16 [label="Node_ID:16
+Prio:11
+WCET:292952.0
+PT:13" color=black]
+	17 [label="Node_ID:17
+Prio:12
+WCET:90936.0
+PT:25" color=black]
+	19 [label="Node_ID:19
+Prio:13
+WCET:90936.0
+PT:33" color=black]
+	20 [label="Node_ID:20
+Prio:14
+WCET:90936.0
+PT:4" color=black]
+	18 [label="Node_ID:18
+Prio:15
+WCET:90936.0
+PT:14" color=black]
+	21 [label="Node_ID:21
+Prio:16
+WCET:90936.0
+PT:17" color=black]
+	22 [label="Node_ID:22
+Prio:17
+WCET:90936.0
+PT:1" color=black]
+	23 [label="Node_ID:23
+Prio:18
+WCET:22264.0
+PT:9" color=black]
+	24 [label="Node_ID:24
+Prio:19
+WCET:22264.0
+PT:7" color=black]
+	25 [label="Node_ID:25
+Prio:20
+WCET:32136.0
+PT:26" color=black]
+	27 [label="Node_ID:27
+Prio:21
+WCET:32136.0
+PT:8" color=black]
+	28 [label="Node_ID:28
+Prio:22
+WCET:32136.0
+PT:33" color=black]
+	26 [label="Node_ID:26
+Prio:23
+WCET:32136.0
+PT:0" color=black]
+	29 [label="Node_ID:29
+Prio:24
+WCET:32136.0
+PT:28" color=black]
+	30 [label="Node_ID:30
+Prio:25
+WCET:32136.0
+PT:6" color=black]
+	31 [label="Node_ID:31
+Prio:27
+WCET:34056.0
+PT:14" color=black]
+	32 [label="Node_ID:32
+Prio:28
+WCET:34056.0
+PT:27" color=black]
+	33 [label="Node_ID:33
+Prio:33
+WCET:0.0
+PT:0" color=black]
+	1 -> 2
+	1 -> 3
+	1 -> 4
+	1 -> 5
+	1 -> 6
+	1 -> 7
+	1 -> 8
+	2 -> 33
+	3 -> 33
+	4 -> 33
+	5 -> 9
+	5 -> 10
+	5 -> 13
+	6 -> 11
+	6 -> 12
+	6 -> 14
+	7 -> 33
+	8 -> 33
+	9 -> 15
+	10 -> 15
+	13 -> 15
+	11 -> 16
+	12 -> 16
+	14 -> 16
+	15 -> 17
+	15 -> 19
+	15 -> 20
+	16 -> 18
+	16 -> 21
+	16 -> 22
+	17 -> 23
+	19 -> 23
+	20 -> 23
+	18 -> 24
+	21 -> 24
+	22 -> 24
+	23 -> 25
+	23 -> 27
+	23 -> 28
+	24 -> 26
+	24 -> 29
+	24 -> 30
+	25 -> 31
+	27 -> 31
+	28 -> 31
+	26 -> 32
+	29 -> 32
+	30 -> 32
+	31 -> 33
+	32 -> 33
+}
