@@ -47,6 +47,28 @@ def ret_dag_cri_makespan(Ret_Core_Data_List, criticality):
         return max(max_data_list)
 
 
+def ret_dag_DAG_NUM_makespan(Ret_Core_Data_List, DAG_NUM):
+    max_data_list = []
+    for core_id, core_data_x in Ret_Core_Data_List.items():
+        for node_data_x in core_data_x.Core_Running_Task:
+            if node_data_x['node'][1]['DAG'].graph['DAG_NUM'] == DAG_NUM:
+                max_data_list.append(node_data_x['end_time'])
+    if len(max_data_list) == 0:
+        os.error(f'system error！__{DAG_NUM}')
+    else:
+        return max(max_data_list)
+
+def ret_dag_CRI_DAG_NUM_makespan(Ret_Core_Data_List, criticality, DAG_NUM):
+    max_data_list = []
+    for core_id, core_data_x in Ret_Core_Data_List.items():
+        for node_data_x in core_data_x.Core_Running_Task:
+            if node_data_x['node'][1]['Criticality'] == criticality and node_data_x['node'][1]['DAG'].graph['DAG_NUM'] == DAG_NUM:
+                max_data_list.append(node_data_x['end_time'])
+    if len(max_data_list) == 0:
+        os.error(f'system error！__{criticality} AND ！__{DAG_NUM} ')
+    else:
+        return max(max_data_list)
+
 def ret_dag_id_makespan(Ret_Core_Data_List, DAG_ID):
     max_data_list = []
     for core_data_x in Ret_Core_Data_List:

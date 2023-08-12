@@ -1,15 +1,97 @@
+import networkx as nx
+from typing import List     #, Optional, Set, Union
+
 #####################################
-#   Section_4: response time analysis arithmetic #
+# Response time analysis arithmetic #
 #####################################
-def Response_Time_analysis(self, RTA_Type, core_num):
+
+# Single DAG
+def Single_DAG_Response_Time_Analysis(RTA_Type: str, DAGx:nx.DiGraph, Core_Num: int):
     if RTA_Type == "non-preemptive":
-        return self.rta_basics_non_preemptive(core_num)
+        return __rta_basics_np_single(DAGx, Core_Num)
     elif RTA_Type == "preemptive":
-        return self.rta_basics_preemptive(core_num)
+        return __rta_basics_p_single(DAGx, Core_Num)
+    elif RTA_Type == "Serrano2016":
+        return __rta_basics_Serrano2016_single(DAGx, Core_Num)
+    elif RTA_Type == "He2021":
+        return __rta_basics_He2021_single(DAGx, Core_Num)
+    elif RTA_Type == "Zhao2022":
+        return __rta_basics_Zhao2022_single(DAGx, Core_Num)
+    elif RTA_Type == "Chen2023":
+        return __rta_basics_Chen2023_single(DAGx, Core_Num)
+    else:
+        print("RTA_Type input error!")
+
+def __rta_basics_np_single(DAGx:nx.DiGraph,
+                           Core_Num: int):
+    return False
+
+def __rta_basics_p_single(DAGx:nx.DiGraph,
+                           Core_Num: int):
+    return False
+
+def __rta_basics_Serrano2016_single(DAGx:nx.DiGraph,
+                                    Core_Num: int):
+    return False
+
+def __rta_basics_He2021_single(DAGx:nx.DiGraph,
+                               Core_Num: int):
+    return False
+
+def __rta_basics_Zhao2022_single(DAGx:nx.DiGraph,
+                                 Core_Num: int):
+    return False
+
+def __rta_basics_Chen2023_single(DAGx:nx.DiGraph,
+                                 Core_Num: int):
+    return False
+
+
+
+# Multiple DAG
+def Multiple_DAG_Response_Time_Analysis(RTA_Type: str, DAG_list: List[nx.DiGraph], Core_Num: int):
+    if RTA_Type == "non-preemptive":
+        return __rta_basics_np_multiple(DAG_list, Core_Num)
+    elif RTA_Type == "preemptive":
+        return __rta_basics_p_multiple(DAG_list, Core_Num)
+    elif RTA_Type == "Serrano2016":
+        return __rta_basics_Serrano2016_multiple(DAG_list, Core_Num)
+    elif RTA_Type == "He2021":
+        return __rta_basics_He2021_multiple(DAG_list, Core_Num)
+    elif RTA_Type == "Zhao2022":
+        return __rta_basics_Zhao2022_multiple(DAG_list, Core_Num)
+    elif RTA_Type == "Chen2023":
+        return __rta_basics_Chen2023_multiple(DAG_list, Core_Num)
     else:
         print("RTA_Type input error!")
 
 
+def __rta_basics_np_multiple(DAG_list: List[nx.DiGraph],
+                             Core_Num: int):
+    return False
+
+def __rta_basics_p_multiple(DAG_list: List[nx.DiGraph],
+                            Core_Num: int):
+    return False
+
+def __rta_basics_Serrano2016_multiple(DAG_list: List[nx.DiGraph],
+                                      Core_Num: int):
+    return False
+
+def __rta_basics_He2021_multiple(DAG_list: List[nx.DiGraph],
+                                 Core_Num: int):
+    return False
+
+def __rta_basics_Zhao2022_multiple(DAG_list: List[nx.DiGraph],
+                                   Core_Num: int):
+    return False
+
+def __rta_basics_Chen2023_multiple(DAG_list: List[nx.DiGraph],
+                                   Core_Num: int):
+    return False
+
+
+"""
 def rta_basics_non_preemptive(self, core_num):
     node_list = list(self.G.nodes())
     paths = list(nx.all_simple_paths(self.G, node_list[0], node_list[-1]))
@@ -91,3 +173,6 @@ def rta_basics_preemptive(self, core_num):
             ret_path_and_rta[3] = x
             ret_path_and_rta[4] = temp_interference_node_list
     return math.ceil(ret_path_and_rta[0])
+
+"""
+

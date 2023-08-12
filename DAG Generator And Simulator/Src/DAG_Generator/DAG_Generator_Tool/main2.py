@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
                              QHBoxLayout, QVBoxLayout, QGridLayout)
 
 class GUI:
-    def __init__(self):6
+    def __init__(self):
         self.app = QApplication(sys.argv)  # 1.1 获取命令行参数
         # ######### 操作区 ########
         """     create layout      """
