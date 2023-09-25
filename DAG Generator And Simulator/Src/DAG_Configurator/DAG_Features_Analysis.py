@@ -143,7 +143,7 @@ def dag_data_initial(DAG_obj, DAGType, DAG_id, Period, Cycle=1, DAGInstID=0, Cri
     if len(np_nodes) != 1:
         source_ni = max([nx for nx in DAG_obj.nodes()]) + 1  # DAG_obj.number_of_nodes() + 1
         DAG_obj.add_node(source_ni, JobTypeID='Source', Node_ID='Source', DAG=DAG_obj, BCET=0, AVET=0, WCET=0, WCET_old=0, Prio=1,
-                         Node_Index=source_ni, RANDOM=0, Flow_Num=0, EDIT_ID='Source')  # 'Node_Indes'
+                         Node_Index=source_ni, RANDOM=0, Flow_Num=0, EDIT_ID='Source', PT=0)  # 'Node_Indes'
         for npx in np_nodes:
             DAG_obj.add_edge(source_ni, npx)
     assert len([nodex for nodex in DAG_obj.nodes() if len(list(DAG_obj.predecessors(nodex))) == 0]) == 1  # one source
@@ -151,7 +151,7 @@ def dag_data_initial(DAG_obj, DAGType, DAG_id, Period, Cycle=1, DAGInstID=0, Cri
     if len(ns_nodes) != 1:
         sink_ni = max([nx for nx in DAG_obj.nodes()]) + 1   # DAG_obj.number_of_nodes() + 1
         DAG_obj.add_node(sink_ni, JobTypeID='Sink', Node_ID='Sink', DAG=DAG_obj, BCET=0, AVET=0, WCET=0, WCET_old=0, Prio=1,
-                         Node_Index=sink_ni, RANDOM=0, Flow_Num=0, EDIT_ID='Sink')  # 'Node_Indes'
+                         Node_Index=sink_ni, RANDOM=0, Flow_Num=0, EDIT_ID='Sink', PT=0)  # 'Node_Indes'
         for nsx in ns_nodes:
             DAG_obj.add_edge(nsx, sink_ni)
 

@@ -62,7 +62,7 @@ def __exam_xlsx_ALL_Output(DAG_list, address):
 
         # ###################### (2)CSV ###################### #
         df = pd.DataFrame({node_x[0]: node_x[1] for node_x in dag_x.nodes(data=True)},
-                          index=['Node_Index', 'Node_ID', 'Edges_List', 'BCET', 'ACET', 'WCET', 'AET', 'Group', 'critic'],
+                          index=['Node_Index', 'Node_ID', 'Edges_List', 'BCET', 'ACET', 'WCET', 'AET', 'Group', 'critic', 'PT'],
                           columns=dag_x.nodes()).T
         df.to_csv(file_addr_name + '.csv')                              # 3.generate csv file
         # ###################### (3)CRI ###################### #
