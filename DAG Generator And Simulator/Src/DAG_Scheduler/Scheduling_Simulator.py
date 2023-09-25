@@ -153,7 +153,7 @@ class Dispatcher_Workspace(object):
                                                                                len(cd.Task_allocation_list) == 0]
             idle_core_list.sort(key=lambda x: x.Core_ID, reverse=False)
             if len(idle_core_list) > 0:
-                # idle_core = random.choice(idle_core_list)                             # (1) 随机抽取一个核
+                idle_core = random.choice(idle_core_list)                             # (1) 随机抽取一个核
                 # idle_core_list.sort(key=lambda x:  x.last_finish_time, reverse=True)  # (2) 抽取完成时间最大的核（负载最大）
                 # idle_core_list.sort(key=lambda x: x.last_finish_time, reverse=False)  # (3) 抽取完成时间最小的核（负载最小）
                 idle_core = idle_core_list.pop(0)
@@ -170,6 +170,7 @@ class Dispatcher_Workspace(object):
                 if self.Preempt_type is not False:   # 抢占模式
                     r_node = self.Ready_Node_Dequeue()      # 即将抢占的结点
                     s_core_list = []
+
                     # type1 全抢占模式
                     if self.Preempt_type == 'type1':
                         s_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Task_allocation_list) == 0
@@ -206,6 +207,7 @@ class Dispatcher_Workspace(object):
 
                     # type4 无高关键DAG性能保障的有限抢占
                     elif self.Preempt_type == 'type4_1':  # 优先级阈值（单边）
+
                         s_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Task_allocation_list) == 0
                                            and (cd.Running_node[0][1]['Criticality'] > r_node[1]['Criticality'])
                                            and (cd.Running_node[0][1]['DAG'].graph['DAG_NUM'] >= r_node[1]['DAG'].graph['DAG_NUM'])
@@ -215,20 +217,41 @@ class Dispatcher_Workspace(object):
                         s_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Task_allocation_list) == 0
                                            and (cd.Running_node[0][1]['Criticality'] > r_node[1]['Criticality'])
                                            and (cd.Running_node[0][1]['DAG'].graph['DAG_NUM'] >= r_node[1]['DAG'].graph['DAG_NUM'])
-                                           and (cd.Running_node[0][1]['PT'] >= r_node[1]['Prio'])]
+                                           and (cd.Running_node[0][1]['PT'] >= r_node[1]['PT'])]
 
                     # type5 关键结点不抢占
-                    elif self.Preempt_type == 'type5':
-                        s_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Task_allocation_list) == 0
-                                           and (cd.Running_node[0][1]['Criticality'] > r_node[1]['Criticality'])
-                                           and (cd.Running_node[0][1]['critic'] == False)
+                    elif self.Preempt_type == 'type5_1':
+                        test_time = self.Non_Preempt_makespan(r_node)
+                        if test_time <= 1.05 * r_node[1]['DAG'].graph['block']:
+                            s_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Task_allocation_list) == 0
+                                               and (cd.Running_node[0][1]['Criticality'] > r_node[1]['Criticality'])
+                                               and (cd.Running_node[0][1]['critic'] == False)
                                        ]
+                    elif self.Preempt_type == 'type5_2':
+                        test_time = self.Non_Preempt_makespan(r_node)
+                        if test_time <= 1.05 * r_node[1]['DAG'].graph['block']:
+                            s_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Task_allocation_list) == 0
+                                               and (cd.Running_node[0][1]['Criticality'] > r_node[1]['Criticality'])
+                                               and ((cd.Running_node[0][1]['critic'] is False) and
+                                                    (r_node[1]['critic'] is True))
+                                           ]
+                    elif self.Preempt_type == 'type5_3':
+                        test_time = self.Non_Preempt_makespan(r_node)
+                        if test_time <= 1.05 * r_node[1]['DAG'].graph['block']:
+                            s_core_list = [cd for cid, cd in self.Core_Data_List.items() if
+                                           len(cd.Task_allocation_list) == 0
+                                           and (cd.Running_node[0][1]['Criticality'] > r_node[1]['Criticality'])
+                                           and ((cd.Running_node[0][1]['critic'] is False) or
+                                                (r_node[1]['critic'] is True))
+                                           ]
                     # type6 纯优先级阈值关键结点不抢占
                     elif self.Preempt_type == 'type6':
-                        s_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Task_allocation_list) == 0
-                                           and (cd.Running_node[0][1]['Criticality'] > r_node[1]['Criticality'])
-                                           and (cd.Running_node[0][1]['Prio'] > r_node[1]['Prio'])
-                                       ]
+                        test_time = self.Non_Preempt_makespan(r_node)
+                        if test_time <= 1.05 * r_node[1]['DAG'].graph['block']:
+                            s_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Task_allocation_list) == 0
+                                               and (cd.Running_node[0][1]['Criticality'] > r_node[1]['Criticality'])
+                                               and (cd.Running_node[0][1]['Prio'] > r_node[1]['Prio'])
+                                           ]
                     # 其他算法
                     elif self.Preempt_type == 'type7':  # %5 加 抢占变量 如果 r_node 阻塞时间小于 deadline * 5 %  不抢占  # 下一个调度点：
                         # if r_node[1]['Criticality'] == 1:                           # （1） 判定r_node是否是高关键任务，不是则直接跳出；

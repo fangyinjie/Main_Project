@@ -186,8 +186,10 @@ if __name__ == "__main__":
             dag_x.graph['block'] = min_makespan
 
     dag_node_num = len([node_x for dag_x in All_DAG_list  for node_x in dag_x.nodes()])
-    ret_dag_list = random_PT_dag_list_new(All_DAG_list, 40)
-    for train_x in range(40):  # 10次迭代搜索：
+
+    cyclye_num = 10
+    ret_dag_list = random_PT_dag_list_new(All_DAG_list, cyclye_num)
+    for train_x in range(cyclye_num):  # 10次迭代搜索：
         for sample_list_id, sample_list in enumerate(ret_dag_list):
             Dispatcher = SS.Dispatcher_Workspace([copy.deepcopy(sample_list[3]), {'Core_Num': core_num, 'Total_Time': Period * cycle * 2,
                            'Enqueue_rank': False, 'Priority_rank': True, 'Preempt_type': Preempt_type, 'Dynamic': False}])
@@ -201,7 +203,8 @@ if __name__ == "__main__":
             print(f'sample_list_id:{sample_list_id}', end='\t')
             print(f'ret_h_MAKESPAN_c1:{sample_list[0]}', end='\t')
             print(f'ret_h_MAKESPAN_c2:{sample_list[1]}', end='\t')
-            print(f'ret_h_MAKESPAN:{sample_list[2]}')
+            print(f'ret_h_MAKESPAN:{sample_list[2]}', end='\t')
+            print(f'C1_SAT:{100 * (sample_list[0] - min_makespan) / min_makespan}')
         ret_dag_list = list(filter(lambda x: x[0] <= 1.05 * min_makespan, ret_dag_list))
         if len(ret_dag_list) < 10:
             ret_dag_list += random_PT_dag_list_new(All_DAG_list, 100 - len(ret_dag_list))
@@ -209,16 +212,17 @@ if __name__ == "__main__":
         else:
             ret_dag_list.sort(key=lambda x: x[0], reverse=False)
             ret_dag_list.sort(key=lambda x: x[2], reverse=False)
-            ret_dag_list = ret_dag_list[:5]  # 留下10个最好的样本
+            ret_dag_list = ret_dag_list[:math.ceil(0.15 * cyclye_num)]  # 留下10个最好的样本
 
-        ret_dag_list += random_PT_dag_list_cross(copy.deepcopy(ret_dag_list), All_DAG_list, 25)       # 交叉 80组
-        ret_dag_list += random_PT_dag_list_mutation(random.sample(ret_dag_list, 5))                   # 变异 10组
-        ret_dag_list += random_PT_dag_list_new(All_DAG_list, 5)                                       # 外来 10组
+        ret_dag_list += random_PT_dag_list_cross(copy.deepcopy(ret_dag_list), All_DAG_list, math.ceil(0.55 * cyclye_num))       # 交叉 80组
+        ret_dag_list += random_PT_dag_list_mutation(random.sample(ret_dag_list, math.ceil(0.15 * cyclye_num)))                   # 变异 10组
+        ret_dag_list += random_PT_dag_list_new(All_DAG_list, math.ceil(0.15 * cyclye_num))                                       # 外来 10组
 
     ret_dag_list.sort(key=lambda x: x[0], reverse=False)
     ret_dag_list.sort(key=lambda x: x[2], reverse=False)
     ret_dag_x = ret_dag_list.pop(0)[3]
-    cycle = 3
+
+    cycle = 1
     for dag_x in ret_dag_x:
             dag_x.graph['Cycle'] = cycle
 
@@ -237,6 +241,14 @@ if __name__ == "__main__":
         print(f'Type_GA_MAKESPAN_cri_1:{Core.ret_dag_CRI_DAG_NUM_makespan(SELF_NP_h, 1, cycle_x)}', end=',')
         print(f'Type_GA_MAKESPAN_cri_2:{Core.ret_dag_CRI_DAG_NUM_makespan(SELF_NP_h, 2, cycle_x)}')
     ret_dict['Type_GA'] = SELF_NP_h
+    hi_dag_list = [dag_x for dag_x in ret_dag_x if dag_x.graph['Criticality'] == 1]
+    lo_dag_list = [dag_x for dag_x in ret_dag_x if dag_x.graph['Criticality'] == 2]
+    for dag_id, dag_x in enumerate(hi_dag_list):
+        dag_x.graph['DAG_ID'] = f'1_{dag_id}'
+    for dag_id, dag_x in enumerate(lo_dag_list):
+        dag_x.graph['DAG_ID'] = f'2_{dag_id}'
+    DDP.Exam_Data_Output(ret_dag_x, 'ALL', Data_Output_Addr + '2023_8_23_EXAM\\')
+
     for ret_key, ret_value in ret_dict.items():
         SRS.show_core_data_list({ret_key:ret_value},
                                 'Show', '',

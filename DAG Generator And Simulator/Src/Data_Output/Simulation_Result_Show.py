@@ -14,8 +14,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from ..DAG_Scheduler import Core as Core
 
-color_list = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6',
-              '#6a3d9a', '#ffff99', '#b15928']
+color_list = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c',
+              '#fdbf6f', '#ff7f00', '#cab2d6', '#6a3d9a', '#ffff99', '#b15928']
 flow_color_dict = {0: '#1b9e77', 1: '#d95f02', 2: '#7570b3', 3: '#e7298a', 4: "#D8D8D8", 5: "#fdcdac", 6: "#cbd5e8"}
 DAG_color_dict = {'DAG1': "#1b9e77", 'DAG2': "#d95f02", 'DAG3': "#7570b3"}
 DAG_ID_Trans1 = {"M1_S1_C1": 'DAG1', "M1_S2_C1": 'DAG1', "M1_S1_C2": 'DAG2', "M1_S2_C2": 'DAG2', "M2_S1_C1": 'DAG3',
@@ -113,13 +113,24 @@ def __show_makespan(Core_Data_List, ax, DAG_list, font_size, title, Period, cycl
             text_left  = y['start_time'] + (y['end_time'] - y['start_time']) / 2
             if barh_width == 0:
                 continue
+            # if 'preempt_test' in y['node'][1]:
+            #     ax.barh(y=core_channel, width=barh_width, height=0.8, left=barh_left,
+            #             color='red', edgecolor='gray')
+            #     ax.text(# s='{0}\n{1}'.format(f'{y["node"][0]}', f'{y["node"][1]["DAG"].graph["DAG_NUM"]}'),
+            #             s='{0}\n'.format(f'{y["node"][0]}', f'{y["node"][1]["WCET"]}', f'{y["node"][1]["DAG"].graph["DAG_NUM"]}'),
+            #             y=core_channel, x=text_left, fontsize=font_size, family='Times New Roman', ha='center', va='center')
+            # else:
+            # if y['node'][1]['critic']:
+            #     color_c = 'red'
+            # else:
+            #     color_c = color_list[y['node'][1]['DAG'].graph['DAGTypeID']]
+            # color_c = color_list[y['node'][1]['DAG'].graph['DAGTypeID']]
+            color_c = color_list[y['node'][1]['DAG'].graph['Criticality']]
             ax.barh(y=core_channel, width=barh_width, height=0.8, left=barh_left,
-                    color=color_list[y['node'][1]['DAG'].graph['DAGTypeID']], edgecolor='gray')
+                    color=color_c, edgecolor='gray')
             ax.text(# s='{0}\n{1}'.format(f'{y["node"][0]}', f'{y["node"][1]["DAG"].graph["DAG_NUM"]}'),
-                    s='\n'.format(f'{y["node"][0]}', f'{y["node"][1]["DAG"].graph["DAG_NUM"]}'),
-
+                    s='{0}\n'.format(f'{y["node"][0]}', f'{y["node"][1]["WCET"]}', f'{y["node"][1]["DAG"].graph["DAG_NUM"]}'),
                     y=core_channel, x=text_left, fontsize=font_size, family='Times New Roman', ha='center', va='center')
-
     # (2) set title
     # plt.legend():函数可以为图形添加图例，图例的内容是由可迭代的artist或者文本提供的，比如，可以把曲线的标签放在图例中。其完整用法为：
     # plt.legend(handles, labels, loc, title, prop)，# 其中：
@@ -132,8 +143,8 @@ def __show_makespan(Core_Data_List, ax, DAG_list, font_size, title, Period, cycl
     makespan_res = Core.ret_makespan(Core_Data_List)
     ax.ticklabel_format(style='plain')
     ax.set_title(title + f"makespan:{makespan_res}", fontsize=font_size, color="black", weight="light", ha='left', x=0)
-    ax.legend([ax.scatter(0, 0, marker="s", color=color_list[dag_x.graph['DAGTypeID']]) for dag_x in DAG_list],
-              [f'dag_{dag_x.graph["DAG_ID"]}' for dag_x in DAG_list],
+    ax.legend([ax.scatter(0, 0, marker="s", color=color_list[dag_x.graph['Criticality']]) for dag_x in DAG_list],
+              [f'dag_{dag_x.graph["Criticality"]}' for dag_x in DAG_list],
               loc='upper right', title='', prop={'family': 'Times New Roman', 'size': font_size})
     # plt.legend( [plt.scatter(0, 0, marker="s", color=color_value) for dag_id_x in DAG_ID_list for color_id, color_value in Dag_color_list[dag_id_x].items()],
     #             ['{0}-flow{1}'.format(DAG_ID_Trans_MC[dag_id_x], color_id) for dag_id_x in DAG_ID_list for color_id, color_value in Dag_color_list[dag_id_x].items()],
