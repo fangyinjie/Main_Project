@@ -29,6 +29,7 @@ class Dispatcher_Workspace(object):
         self.Enqueue_rank  = Param_List[1]['Enqueue_rank']    # 是否就绪结点入队排序；
         self.Priority_rank = Param_List[1]['Priority_rank']   # 是否就绪结点出队优先级排序；
         self.Preempt_type  = Param_List[1]['Preempt_type']    # 是否就绪结点出队优先级排序；
+        self.Preempt_matrix  = Param_List[1]['Preempt_matrix']    # 是否就绪结点出队优先级排序；
 
         self.Priority_Max_num = sum([dag_x.number_of_nodes() for dag_x in self.Dag_List])
         self.Dynamic = Param_List[1]['Dynamic']  # 是否采用动态调度；
@@ -39,7 +40,7 @@ class Dispatcher_Workspace(object):
         self.Temp_DAG_List = []  # append ['DAG_ID', 'DAGInstID', 'DAG_NUM', 'DAG_obj']
 
         self.env = simpy.Environment()  # simulation environment
-        self.core_to_scheduler_event = [self.env.event() for _ in range(self.Core_Num)]  # 多event解决同时到达问题
+        self.core_to_scheduler_event = [self.env.event() for _ in range(self.Core_Num)]         # 多event解决同时到达问题
         self.task_to_scheduler_event = [self.env.event() for _ in range(len(self.Dag_List))]
         self.scheduler_to_core_event = [self.env.event() for _ in range(self.Core_Num)]
         self.core_task_dict = {}
@@ -254,7 +255,7 @@ class Dispatcher_Workspace(object):
                                            ]
                     # 其他算法
                     elif self.Preempt_type == 'type7':  # %5 加 抢占变量 如果 r_node 阻塞时间小于 deadline * 5 %  不抢占  # 下一个调度点：
-                        # if r_node[1]['Criticality'] == 1:                           # （1） 判定r_node是否是高关键任务，不是则直接跳出；
+                        # if r_node[1]['Criticality'] == 1:            # （1） 判定r_node是否是高关键任务，不是则直接跳出；
                         test_time = self.Non_Preempt_makespan(r_node)  # （2） 如果是高关键，计算如果不抢占，高关键任务是否会超时 %5
                         if test_time > 1.05 * r_node[1]['DAG'].graph['block']:  # （3） 如果超时则抢占；否则不抢占；
                             s_core_list = [cd for cid, cd in self.Core_Data_List.items() if
@@ -265,16 +266,23 @@ class Dispatcher_Workspace(object):
                                            len(cd.Task_allocation_list) == 0
                                            and (cd.Running_node[0][1]['Criticality'] > r_node[1]['Criticality'])
                                            and (cd.Running_node[0][1]['preemptable'] or r_node[1]['preemptable'])]
-
+                    # type 8 抢占矩阵判定
+                    elif self.Preempt_type == 'type8':
+                        # try:
+                        s_core_list = [cd for cid, cd in self.Core_Data_List.items() if len(cd.Task_allocation_list) == 0
+                                           and self.Preempt_matrix[0] [r_node[0]-1] [cd.Running_node[0][0]-1] ]
+                        # except:
+                        #     print(123)
                     else:
                         print('error premmpt type') # and 抢占阈值 = cd.Running_node[0] [1]['Prio'] + (N - cd.Running_node[0] [1]['Prio']) * Ug..
                     if len(s_core_list) > 0:
                         s_core = max(s_core_list, key=lambda x: x.Running_node[0] [1]['Prio'])
                         s_core.Running_node[0] [1]['preempt_test'] = True
+                        self.Preempt_matrix[1][r_node[0]-1][s_core.Running_node[0][0]-1] = True
                         r_node[1]['preempt_test'] = True
                         s_core.Task_allocation_list.insert(0, r_node)
-
                         self.core_task_dict[s_core.Core_ID].interrupt()
+
                     else:
                         self.Ready_list.append(r_node)
                         break
