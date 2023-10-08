@@ -1,136 +1,75 @@
-import os
-import re
-import math
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 import copy
-import time
-# import datetime
-import itertools
-
-import numpy as np
-import pandas as pd
-import networkx as nx
-import graphviz as gz
-import z3.z3
-# from itertools import combinations
-from z3.z3 import Int, Sum, If, Solver, Or, IntNumRef, Bool, And, Implies
-from random import random, sample, uniform, randint
+# # # # # # # # # # # # # # # #
+# Randomized DAG Generator
+# Create Time: 2023/9/1921:20
+# Fang YJ
+# Real-Time Systems Group
+# Hunan University HNU
+# # # # # # # # # # # # # # # #
+import os
 import math
+import time
+import itertools
+import networkx as nx
+
 
 # # # # # # # # # # # # # # # #
 # (1) combination
-# A004250
+# A000041
 # 1, 1, 2, 3, 5, 7, 11, 15, 22, 30, 42, 56, 77, 101, 135, 176, 231, 297, 385, 490, 627, 792, 1002, 1255, 1575, 1958,
 # 2436, 3010, 3718, 4565, 5604, 6842, 8349, 10143, 12310, 14883, 17977, 21637, 26015, 31185, 37338, 44583, 53174, 63261,
 # 75175, 89134, 105558, 124754, 147273, 173525
 # # # # # # # # # # # # # # # #
-def combination_exhaustion(node_num, shape_min=0, shape_max=float('Inf')):
+def combination_exhaustion(node_num,
+                           level_min=1, level_max=float('Inf'),
+                           shape_min=1, shape_max=float('Inf')):
+    assert (level_max >= level_min >= 1) and (shape_max >= shape_min >= 1)
     ret_list = []
-    for local_n in range(max(shape_min, 1), min(node_num + 1, shape_max)):
-        input_node_num = node_num - local_n
-        if input_node_num == 0:
-            ret_list.append((node_num,))
-        else:
-            sat_list = combination_exhaustion(input_node_num, local_n, shape_max)
-            for sat_list_x in sat_list:
-                ret_list.append((local_n,) + sat_list_x)
+    if level_min == 1:
+        if shape_min <= node_num <= shape_max:
+            ret_list.append([node_num])
+    if level_max > 1:
+        for X_i in range(shape_min, min(int(node_num/2), shape_max)+1):
+            X_ipp = node_num - X_i
+            sat_list = combination_exhaustion(X_ipp, max(level_min-1, 1), level_max-1, X_i, shape_max)
+            ret_list += [[X_i] + sat_x for sat_x in sat_list]
+            # for sat_x in sat_list:
+            #     ret_list.append([X_i] + sat_x)
     return ret_list
+
 
 # # # # # # # # # # # # # # # #
 # (2) permutation
+# A000079		Powers of 2: a(n) = 2^n.
+# 2, 4, 8, 16, 32, 64, 128
 # 输入 combination不同的组合；
-# 根据组合合成不同的排序；
-# 不同的组合一定无法得到同样的排列；
+# 根据组合合成不同的排序；不同的组合一定无法得到同样的排列；
 # # # # # # # # # # # # # # # #
-def permutation_exhaustion(combination_list):
+def permutation_exhaustion_total(CShapeList):
     ret_list = []
-    for combination_x in combination_list:
-        ret_list += list(set(itertools.permutations(combination_x, len(combination_x))))
+    for CShapex in CShapeList:
+        ret_list += permutation_exhaustion(CShapex, 1)
+    return ret_list
+
+def permutation_exhaustion(CShape, sh_pre, out_degree=float('Inf')):
+    ret_list = []
+    for X_i in list(set(CShape)):
+        if X_i <= sh_pre * out_degree:
+            if len(CShape) == 1:
+                ret_list.append([X_i])
+            else:
+                NShape = copy.deepcopy(CShape)
+                NShape.remove(X_i)
+                sat_list = permutation_exhaustion(NShape, X_i, out_degree)
+                ret_list += [[X_i] + sat_x for sat_x in sat_list]
     return ret_list
 
 
 # # # # # # # # # # # # # # # #
 # (3) connection
 # # # # # # # # # # # # # # # #
-"""
-# def combination_exhaustion_free(n, l, sh_min, sh_max):  # 不能于shmin shmax 相等
-#     # elif l == n == 0:
-#     #     ret_list = [()]
-#     assert n > 0
-#     assert l > 0
-#     ret_list = []
-#     if l == 1 and sh_min < n < sh_max:
-#         ret_list = [(n,)]
-#     else:
-#         for source_node_num in range(sh_min + 1, sh_max):   # (sh_min, sh_max)
-#             input_node_num = n - source_node_num
-#             input_level_num = l - 1
-#             if sh_min * input_level_num < input_node_num < sh_max * input_level_num:
-#                 sat_list = combination_exhaustion_free(n-source_node_num, input_level_num, source_node_num-1, sh_max)
-#                 for sat_list_x in sat_list:
-#                     ret_list.append((source_node_num,) + sat_list_x)
-#     return ret_list
-
-def combination_exhaustion(n, l, sh_min, sh_max):
-    assert l > 2
-    assert n > 3
-    assert sh_max >= sh_min
-    ret_combination_exhaustion_list = []
-    if sh_min == sh_max:
-        if (l - 2) * sh_min == n - 2:
-            ret_combination_exhaustion_list = [(1, 1) + tuple([sh_min for _ in range(l - 2)])]
-    else:
-        assert l > 3
-        if sh_min + 1 == sh_max:    # 没有随机层
-            if sh_min * (l -2) <= n - 2 <= sh_max *  (l -2):
-                num_sh_max = n - 2 - sh_min * (l -2)
-                num_sh_min = l - 2 - num_sh_max
-                ret_combination_exhaustion_list = [(1, 1) + tuple([sh_min for _ in range(num_sh_min)]) +
-                                                            tuple([sh_max for _ in range(num_sh_max)])]
-        elif sh_max > sh_min + 1:
-            for num_sh_max in range(1, l - 1):  # [1, l-2]
-                for num_sh_min in range(1, l - 1 - num_sh_max):      # [1, l-2-num_sh_max]
-                    res_level_num = l - 2 - num_sh_max - num_sh_min  # 剩下的随机层,
-                    num_rnode_min = res_level_num * sh_min + 1
-                    num_rnode_max = res_level_num * sh_max - 1
-                    res_node_num = n - 2 - num_sh_min * sh_min - num_sh_max * sh_max
-                    # 可取的选择区间: res_node_num \in (num_rnode_min, num_rnode_max)
-                    if num_rnode_min <= res_node_num <= num_rnode_max:
-                        temp_shape_num_list = combination_exhaustion_free(res_node_num, res_level_num, sh_min, sh_max)
-                        for temp_shape_num_x in temp_shape_num_list:
-                            ret_combination_exhaustion_list.append(temp_shape_num_x + (1, 1) +
-                                                                   tuple([sh_max for _ in range(num_sh_max)]) +
-                                                                   tuple([sh_min for _ in range(num_sh_min)]))
-        else:
-            os.system('error')
-    return ret_combination_exhaustion_list
-
-"""
-
-def Algorithm_input(Algorithm, Algorithm_param_dict):
-    dag_list = []
-    if Algorithm == 'MINE_NEW':
-        dag_list = __gen_mine_new(Algorithm_param_dict)
-    else:
-        pass
-    return dag_list
-
-
-
-def exam_pic_show(dag_x, node_num, title):
-    dot = gz.Digraph()
-    dot.attr(rankdir='LR')
-    for node_x in dag_x.nodes(data=True):
-        temp_label = 'Node_ID:{0}'.format(str(node_x[0]))
-        dot.node('%s' % node_x[0], temp_label, color='black')
-    for edge_x in dag_x.edges():
-        dot.edge('%s' % edge_x[0], '%s' % edge_x[1])
-    # dot.view('./test.png')
-    address = f'./generator_test/{node_num}/'
-    os.makedirs(address, mode=0o777, exist_ok=True)
-    # dot.view(address + f'{title}')
-    dot.render(address + f'{title}', view=False)
-
-
 def gen_mine_new(all_shape_list):
     ret_dag_list = []
     for shape_num_list in all_shape_list:
@@ -313,19 +252,14 @@ def down_same_level_node_iso_label_comput(dag_x, level_id):
             dag_x.nodes[node_x]['down_iso_label'] = down_iso_label
 
 
-# 向上 加约束
-# (1) 只有/必须有n；
-# (2) 加入level；
-
 if __name__ == "__main__":
-    for node_num in range(9, 10):  # node_num = n + 2
-        print('#########################################################################')
+    for n in range(30):
         stime = time.time()
-        ret_list_1 = combination_exhaustion(node_num)          # step 1 组合
-        ret_list_2 = permutation_exhaustion(ret_list_1) # step 2 排序
+        ret_list1 = combination_exhaustion(n)
+        ret_list2 = permutation_exhaustion_total(ret_list1)
         etime = time.time()
-        print(f'node_num:{node_num}_ time:{etime - stime}_list1-length = {len(ret_list_1)}; list2-length = {len(ret_list_2)};')
-        # print(ret_list_1)
-        # print(ret_list_2)
-
-
+        print(f'node_num:{n}_expansion pime:{etime - stime:.2f}_ length1:{len(ret_list1)}_ length2:{len(ret_list2)}')
+        # print(ret_list1)
+        # print(ret_list2)
+        # ret_list1 = list(itertools.permutations(list(range(n)), n))
+        # ret_list2 = list(set(itertools.permutations(list(range(n)), n)))

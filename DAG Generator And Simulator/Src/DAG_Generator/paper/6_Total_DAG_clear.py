@@ -124,8 +124,6 @@ def Algorithm_input(Algorithm, Algorithm_param_dict):
         pass
     return dag_list
 
-
-
 def exam_pic_show(dag_x, node_num, title):
     dot = gz.Digraph()
     dot.attr(rankdir='LR')
@@ -334,7 +332,7 @@ if __name__ == "__main__":
         stime = time.time()
         ret_list_1 = combination_exhaustion(n)          # step 1 组合
         ret_list_2 = permutation_exhaustion(ret_list_1) # step 2 排序
-        node_num =  n + 2
+        node_num = n + 2
         etime1 = time.time()
         for ret2_id in range(len(ret_list_2)):
             ret_list_2[ret2_id] = (1,) + ret_list_2[ret2_id]
@@ -355,6 +353,7 @@ if __name__ == "__main__":
         #     exam_pic_show(ret3_x, node_num, ret3_id)
         saveetime = time.time()
         print(f'savetime:{savestime - saveetime}')
+
 # #########################################################################
 # node_num:3_ time1:0.0_ time2:0.0_list1-length = 1; list2-length = 1; list3-length = 1
 # #########################################################################
